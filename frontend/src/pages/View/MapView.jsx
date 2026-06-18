@@ -190,6 +190,49 @@ function DetailPanel({ site, userLocation, onClose }) {
           <h3 className="mt-2 text-sm font-semibold leading-snug text-white">{site.name}</h3>
           <p className="mt-1 text-xs text-white/55">{site.municipality}</p>
 
+          {/* address */}
+          {site.address ? (
+            <div className="mt-1.5 flex items-start gap-1.5 text-[11px] text-white/50">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="mt-px h-3 w-3 shrink-0" aria-hidden>
+                <path fillRule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.397a5 5 0 0 0-10 0c0 2.055 1.19 4.035 2.29 5.397a15.589 15.589 0 0 0 2.047 2.082 8.58 8.58 0 0 0 .189.153l.012.01ZM8 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" clipRule="evenodd" />
+              </svg>
+              <span>{site.address}</span>
+            </div>
+          ) : null}
+
+          {/* funding */}
+          {(site.amountOfAssistance || site.counterpartName) ? (() => {
+            const parsePeso = (v) => { const n = Number(String(v ?? "").replace(/,/g, "")); return Number.isFinite(n) ? n : 0; };
+            const dost  = parsePeso(site.amountOfAssistance);
+            const cp    = parsePeso(site.counterpartAmount);
+            const total = dost + cp;
+            return (
+              <div className="mt-3 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 space-y-1.5">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-white/40">Funding</p>
+                {site.amountOfAssistance ? (
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <span className="text-white/55">DOST-MIMAROPA</span>
+                    <span className="font-semibold text-white/85">₱{site.amountOfAssistance}</span>
+                  </div>
+                ) : null}
+                {site.counterpartName ? (
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <span className="truncate text-white/55">{site.counterpartName}</span>
+                    <span className="shrink-0 font-semibold text-white/85">
+                      {site.counterpartAmount ? `₱${site.counterpartAmount}` : "—"}
+                    </span>
+                  </div>
+                ) : null}
+                {total > 0 ? (
+                  <div className="flex items-center justify-between gap-2 border-t border-white/10 pt-1.5 text-xs">
+                    <span className="font-semibold text-white/65">Total</span>
+                    <span className="font-bold text-white">₱{total.toLocaleString("en-PH")}</span>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })() : null}
+
           {site.description && (
             <p className="mt-3 text-xs leading-relaxed text-white/65">{site.description}</p>
           )}

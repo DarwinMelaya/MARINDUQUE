@@ -42,6 +42,8 @@ const ProgramsModals = ({
   const [programType, setProgramType] = useState("");
   const [title, setTitle] = useState("");
   const [amountOfAssistance, setAmountOfAssistance] = useState("");
+  const [counterpartName, setCounterpartName] = useState("");
+  const [counterpartAmount, setCounterpartAmount] = useState("");
   const [beneficiary, setBeneficiary] = useState("");
   const [contactPerson, setContactPerson] = useState("");
   const [briefDescription, setBriefDescription] = useState("");
@@ -68,6 +70,8 @@ const ProgramsModals = ({
     setProgramType("");
     setTitle("");
     setAmountOfAssistance("");
+    setCounterpartName("");
+    setCounterpartAmount("");
     setBeneficiary("");
     setContactPerson("");
     setBriefDescription("");
@@ -87,6 +91,8 @@ const ProgramsModals = ({
     setProgramType(editingProject.programType || "");
     setTitle(editingProject.title || "");
     setAmountOfAssistance(formatAmountInput(editingProject.amountOfAssistance || ""));
+    setCounterpartName(editingProject.counterpartName || "");
+    setCounterpartAmount(formatAmountInput(editingProject.counterpartAmount || ""));
     setBeneficiary(editingProject.beneficiary || "");
     setContactPerson(editingProject.contactPerson || "");
     setBriefDescription(editingProject.briefDescription || "");
@@ -108,6 +114,8 @@ const ProgramsModals = ({
     setProgramType(editingProject.programType || "");
     setTitle(editingProject.title || "");
     setAmountOfAssistance(formatAmountInput(editingProject.amountOfAssistance || ""));
+    setCounterpartName(editingProject.counterpartName || "");
+    setCounterpartAmount(formatAmountInput(editingProject.counterpartAmount || ""));
     setBeneficiary(editingProject.beneficiary || "");
     setContactPerson(editingProject.contactPerson || "");
     setBriefDescription(editingProject.briefDescription || "");
@@ -166,6 +174,8 @@ const ProgramsModals = ({
         programType,
         title,
         amountOfAssistance,
+        counterpartName,
+        counterpartAmount,
         beneficiary,
         contactPerson,
         briefDescription,
@@ -243,7 +253,14 @@ const ProgramsModals = ({
                     name="programType"
                     value={type}
                     checked={programType === type}
-                    onChange={() => setProgramType(type)}
+                    onChange={() => {
+                      setProgramType(type);
+                      // clear counterpart if switching to a non-counterpart program
+                      if (type !== "CEST" && type !== "SSCP") {
+                        setCounterpartName("");
+                        setCounterpartAmount("");
+                      }
+                    }}
                     className="sr-only"
                   />
                   {type}
@@ -270,22 +287,66 @@ const ProgramsModals = ({
                 />
               </div>
 
-              <div>
-                <label htmlFor="modal-amount-assistance" className={labelClass}>
-                  Amount of assistance
-                </label>
-                <input
-                  id="modal-amount-assistance"
-                  name="amountOfAssistance"
-                  type="text"
-                  inputMode="decimal"
-                  value={amountOfAssistance}
-                  onChange={(e) =>
-                    setAmountOfAssistance(formatAmountInput(e.target.value))
-                  }
-                  className={inputClass}
-                  placeholder="e.g. 500,000"
-                />
+              {/* ── Funding section ── */}
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-4">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-white/50">
+                  Funding
+                </h3>
+
+                <div>
+                  <label htmlFor="modal-amount-assistance" className={labelClass}>
+                    DOST-MIMAROPA amount of assistance
+                  </label>
+                  <input
+                    id="modal-amount-assistance"
+                    name="amountOfAssistance"
+                    type="text"
+                    inputMode="decimal"
+                    value={amountOfAssistance}
+                    onChange={(e) =>
+                      setAmountOfAssistance(formatAmountInput(e.target.value))
+                    }
+                    className={inputClass}
+                    placeholder="e.g. 500,000"
+                  />
+                </div>
+
+                {(programType === "CEST" || programType === "SSCP") && (
+                <div className="rounded-xl border border-white/[0.08] bg-black/20 p-3 space-y-3">
+                  <p className="text-xs font-semibold text-white/55">Counterpart</p>
+                  <div>
+                    <label htmlFor="modal-counterpart-name" className={labelClass}>
+                      Counterpart provider
+                    </label>
+                    <input
+                      id="modal-counterpart-name"
+                      name="counterpartName"
+                      type="text"
+                      value={counterpartName}
+                      onChange={(e) => setCounterpartName(e.target.value)}
+                      className={inputClass}
+                      placeholder="e.g. Sangguniang Barangay of Yook"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="modal-counterpart-amount" className={labelClass}>
+                      Counterpart amount
+                    </label>
+                    <input
+                      id="modal-counterpart-amount"
+                      name="counterpartAmount"
+                      type="text"
+                      inputMode="decimal"
+                      value={counterpartAmount}
+                      onChange={(e) =>
+                        setCounterpartAmount(formatAmountInput(e.target.value))
+                      }
+                      className={inputClass}
+                      placeholder="e.g. 150,000"
+                    />
+                  </div>
+                </div>
+                )}
               </div>
 
               <div>

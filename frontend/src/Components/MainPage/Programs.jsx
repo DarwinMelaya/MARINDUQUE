@@ -98,6 +98,15 @@ const Programs = ({ onInitialLoadComplete }) => {
     return Number.isNaN(d.getTime()) ? "—" : String(d.getFullYear());
   };
 
+  /** Parse a comma-formatted amount string → number (0 if blank/invalid). */
+  const parsePeso = (v) => {
+    const n = Number(String(v ?? "").replace(/,/g, ""));
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const formatPeso = (n) =>
+    n > 0 ? `₱${n.toLocaleString("en-PH")}` : null;
+
   return (
     <section
       id="assistance"
@@ -266,6 +275,37 @@ const Programs = ({ onInitialLoadComplete }) => {
                       <div className="mt-2 text-xs text-white/65">
                         {proj.beneficiary} • {yearFromRecord(proj)}
                       </div>
+
+                      {/* funding row */}
+                      {(proj.amountOfAssistance || proj.counterpartName) ? (() => {
+                        const dost  = parsePeso(proj.amountOfAssistance);
+                        const cp    = parsePeso(proj.counterpartAmount);
+                        const total = dost + cp;
+                        return (
+                          <div className="mt-2 rounded-xl border border-white/[0.07] bg-white/[0.04] px-2.5 py-2 text-[11px]">
+                            {proj.amountOfAssistance ? (
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="text-white/50">DOST-MIMAROPA</span>
+                                <span className="font-semibold text-white/80">₱{proj.amountOfAssistance}</span>
+                              </div>
+                            ) : null}
+                            {proj.counterpartName ? (
+                              <div className="flex items-center justify-between gap-2 mt-0.5">
+                                <span className="truncate text-white/50">{proj.counterpartName}</span>
+                                <span className="shrink-0 font-semibold text-white/80">
+                                  {proj.counterpartAmount ? `₱${proj.counterpartAmount}` : "—"}
+                                </span>
+                              </div>
+                            ) : null}
+                            {total > 0 ? (
+                              <div className="mt-1.5 flex items-center justify-between gap-2 border-t border-white/10 pt-1.5">
+                                <span className="font-semibold text-white/65">Total</span>
+                                <span className="font-bold text-white/95">{formatPeso(total)}</span>
+                              </div>
+                            ) : null}
+                          </div>
+                        );
+                      })() : null}
 
                       {proj.address ? (
                         <div className="mt-1 flex items-center gap-1 text-[11px] text-white/50">

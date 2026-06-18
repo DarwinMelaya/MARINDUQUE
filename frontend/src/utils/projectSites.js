@@ -31,6 +31,10 @@ export function projectsToMapSites(list) {
       municipality: p.beneficiary,
       status: p.projectStatus,
       description: p.briefDescription,
+      address: p.address ?? "",
+      amountOfAssistance: p.amountOfAssistance ?? "",
+      counterpartName: p.counterpartName ?? "",
+      counterpartAmount: p.counterpartAmount ?? "",
       images: Array.isArray(p.images) ? p.images.filter(Boolean) : [],
       coordinates: [Number(p.location.latitude), Number(p.location.longitude)],
     }));

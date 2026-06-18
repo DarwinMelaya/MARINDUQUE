@@ -243,7 +243,7 @@ const AdminPrograms = () => {
               </p>
 
               <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.03]">
-                <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+                <table className="w-full min-w-[900px] border-collapse text-left text-sm">
                   <thead>
                     <tr className="border-b border-white/10 bg-black/30 text-xs font-semibold uppercase tracking-wide text-white/55">
                       <th className="px-3 py-3 sm:px-4">Photo</th>
@@ -251,6 +251,7 @@ const AdminPrograms = () => {
                       <th className="px-3 py-3 sm:px-4">Program</th>
                       <th className="px-3 py-3 sm:px-4">Status</th>
                       <th className="px-3 py-3 sm:px-4">Beneficiary</th>
+                      <th className="px-3 py-3 sm:px-4">Funding</th>
                       <th className="px-3 py-3 sm:px-4">Map pin</th>
                       <th className="px-3 py-3 text-right sm:px-4">Actions</th>
                     </tr>
@@ -304,6 +305,39 @@ const AdminPrograms = () => {
                           </td>
                           <td className="max-w-[180px] px-3 py-2.5 align-middle text-white/65 sm:px-4">
                             <span className="line-clamp-2">{p.beneficiary}</span>
+                          </td>
+                          <td className="px-3 py-2.5 align-middle sm:px-4">
+                            {(() => {
+                              const parse = (v) => { const n = Number(String(v ?? "").replace(/,/g, "")); return Number.isFinite(n) ? n : 0; };
+                              const dost  = parse(p.amountOfAssistance);
+                              const cp    = parse(p.counterpartAmount);
+                              const total = dost + cp;
+                              return (
+                                <div className="min-w-[120px] text-[11px]">
+                                  {p.amountOfAssistance ? (
+                                    <div className="flex justify-between gap-2 text-white/60">
+                                      <span>DOST</span>
+                                      <span className="font-semibold">₱{p.amountOfAssistance}</span>
+                                    </div>
+                                  ) : null}
+                                  {p.counterpartName ? (
+                                    <div className="flex justify-between gap-2 text-white/50">
+                                      <span className="truncate max-w-[80px]">{p.counterpartName}</span>
+                                      <span className="font-semibold shrink-0">{p.counterpartAmount ? `₱${p.counterpartAmount}` : "—"}</span>
+                                    </div>
+                                  ) : null}
+                                  {total > 0 ? (
+                                    <div className="flex justify-between gap-2 border-t border-white/10 pt-0.5 mt-0.5 font-semibold text-white/90">
+                                      <span>Total</span>
+                                      <span>₱{total.toLocaleString("en-PH")}</span>
+                                    </div>
+                                  ) : null}
+                                  {!p.amountOfAssistance && !p.counterpartName ? (
+                                    <span className="text-white/30">—</span>
+                                  ) : null}
+                                </div>
+                              );
+                            })()}
                           </td>
                           <td className="whitespace-nowrap px-3 py-2.5 align-middle text-xs sm:px-4">
                             {hasPin ? (
