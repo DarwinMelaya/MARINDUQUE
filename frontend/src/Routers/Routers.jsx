@@ -9,6 +9,7 @@ import {
   SignUp,
   AdminPost,
   CoralReefMapping,
+  MapView,
 } from "../pages";
 
 export const Routers = () => {
@@ -18,6 +19,7 @@ export const Routers = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/map-view" element={<MapView />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
