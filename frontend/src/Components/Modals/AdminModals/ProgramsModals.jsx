@@ -45,6 +45,7 @@ const ProgramsModals = ({
   const [contactPerson, setContactPerson] = useState("");
   const [briefDescription, setBriefDescription] = useState("");
   const [description, setDescription] = useState("");
+  const [address, setAddress] = useState("");
   const [projectStatus, setProjectStatus] = useState("Ongoing");
   const [imageFiles, setImageFiles] = useState([]);
   /** Existing image URLs kept on update (edit mode). */
@@ -70,6 +71,7 @@ const ProgramsModals = ({
     setContactPerson("");
     setBriefDescription("");
     setDescription("");
+    setAddress("");
     setImageFiles([]);
     setKeptImageUrls([]);
     onLatitudeChange("");
@@ -88,6 +90,7 @@ const ProgramsModals = ({
     setContactPerson(editingProject.contactPerson || "");
     setBriefDescription(editingProject.briefDescription || "");
     setDescription(editingProject.description || "");
+    setAddress(editingProject.address || "");
     setProjectStatus(editingProject.projectStatus || "Ongoing");
     const lat = editingProject.location?.latitude;
     const lng = editingProject.location?.longitude;
@@ -108,6 +111,7 @@ const ProgramsModals = ({
     setContactPerson(editingProject.contactPerson || "");
     setBriefDescription(editingProject.briefDescription || "");
     setDescription(editingProject.description || "");
+    setAddress(editingProject.address || "");
     setProjectStatus(editingProject.projectStatus || "Ongoing");
     const lat = editingProject.location?.latitude;
     const lng = editingProject.location?.longitude;
@@ -165,6 +169,7 @@ const ProgramsModals = ({
         contactPerson,
         briefDescription,
         description,
+        address,
         projectStatus,
         location: {
           latitude: lat,
@@ -310,6 +315,21 @@ const ProgramsModals = ({
                   onChange={(e) => setContactPerson(e.target.value)}
                   className={inputClass}
                   placeholder="Name and role if applicable"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="modal-address" className={labelClass}>
+                  Address
+                </label>
+                <input
+                  id="modal-address"
+                  name="address"
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className={inputClass}
+                  placeholder="e.g. Barangay Malbog, Buenavista, Marinduque"
                 />
               </div>
 

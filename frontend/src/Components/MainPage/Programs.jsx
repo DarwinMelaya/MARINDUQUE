@@ -266,6 +266,15 @@ const Programs = ({ onInitialLoadComplete }) => {
                       <div className="mt-2 text-xs text-white/65">
                         {proj.beneficiary} • {yearFromRecord(proj)}
                       </div>
+
+                      {proj.address ? (
+                        <div className="mt-1 flex items-center gap-1 text-[11px] text-white/50">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-3 w-3 shrink-0" aria-hidden="true">
+                            <path fillRule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.397a5 5 0 0 0-10 0c0 2.055 1.19 4.035 2.29 5.397a15.589 15.589 0 0 0 2.047 2.082 8.58 8.58 0 0 0 .189.153l.012.01ZM8 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" clipRule="evenodd" />
+                          </svg>
+                          <span className="line-clamp-1">{proj.address}</span>
+                        </div>
+                      ) : null}
                     </div>
 
                     {!imgs[0] ? (

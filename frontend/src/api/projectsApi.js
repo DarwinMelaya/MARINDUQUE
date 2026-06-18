@@ -6,7 +6,7 @@
  *
  * Table columns (snake_case):
  *   id, program_type, title, amount_of_assistance, beneficiary,
- *   contact_person, brief_description, description, project_status,
+ *   contact_person, brief_description, description, address, project_status,
  *   latitude, longitude, images (text[]),
  *   created_at, updated_at
  *
@@ -31,6 +31,7 @@ function fromRow(row) {
     contactPerson: row.contact_person ?? "",
     briefDescription: row.brief_description ?? "",
     description: row.description ?? "",
+    address: row.address ?? "",
     projectStatus: row.project_status,
     location: {
       latitude: row.latitude ?? null,
@@ -52,6 +53,7 @@ function toRow(payload) {
     contact_person: payload.contactPerson ?? "",
     brief_description: payload.briefDescription ?? "",
     description: payload.description ?? "",
+    address: payload.address ?? "",
     project_status: payload.projectStatus ?? "",
     latitude: payload.location?.latitude ?? null,
     longitude: payload.location?.longitude ?? null,
