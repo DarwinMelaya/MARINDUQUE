@@ -6,6 +6,7 @@
  */
 
 import supabase, { STORAGE_BUCKET } from "../utils/supabaseClient";
+import { compressImage } from "../utils/compressImage";
 
 export { supabase };
 
@@ -50,12 +51,15 @@ export function getApiErrorMessage(err, fallback = "Request failed.") {
  * @returns {Promise<string>} public URL
  */
 export async function uploadFile(folder, file) {
-  const ext = file.name.split(".").pop();
+  // Compress before upload — reduces MB photos to ≤ 800 KB JPEG
+  const compressed = await compressImage(file);
+
+  const ext  = compressed.name.split(".").pop();
   const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
 
   const { error: uploadError } = await supabase.storage
     .from(STORAGE_BUCKET)
-    .upload(path, file, { upsert: false });
+    .upload(path, compressed, { upsert: false });
 
   if (uploadError) throw uploadError;
 

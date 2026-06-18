@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { compressImages } from "../../../utils/compressImage";
 
 const PROGRAM_TYPES = ["GIA", "CEST", "SSCP", "SETUP"];
 
@@ -370,9 +371,9 @@ const ProgramsModals = ({
                   <span className="font-normal text-white/45">(optional)</span>
                 </label>
                 <p className="mb-2 text-xs text-white/45">
-                  Up to {MAX_PROJECT_IMAGES} images (JPEG, PNG, WebP, GIF), max{" "}
-                  {Math.round(MAX_IMAGE_BYTES / (1024 * 1024))} MB each. Shown on
-                  the public Programs page.
+                  Up to {MAX_PROJECT_IMAGES} images (JPEG, PNG, WebP), max{" "}
+                  {Math.round(MAX_IMAGE_BYTES / (1024 * 1024))} MB each.
+                  Images are automatically compressed to ≤ 800 KB before upload.
                 </p>
                 {keptImageUrls.length > 0 ? (
                   <ul className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -408,7 +409,7 @@ const ProgramsModals = ({
                   accept="image/jpeg,image/png,image/webp,image/gif"
                   multiple
                   className="block w-full text-sm text-white/80 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0054A6]/30 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#0054A6]/45"
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const picked = Array.from(e.target.files || []);
                     e.target.value = "";
                     const oversized = picked.filter((f) => f.size > MAX_IMAGE_BYTES);
@@ -418,10 +419,12 @@ const ProgramsModals = ({
                       );
                       return;
                     }
+                    // Compress before storing — converts MB → KB
+                    const compressed = await compressImages(picked);
                     const cap = MAX_PROJECT_IMAGES - keptImageUrls.length;
                     setImageFiles((prev) => {
-                      const next = [...prev, ...picked].slice(0, cap);
-                      if (prev.length + picked.length > cap) {
+                      const next = [...prev, ...compressed].slice(0, cap);
+                      if (prev.length + compressed.length > cap) {
                         toast.error(
                           `Max ${MAX_PROJECT_IMAGES} images total (including saved photos).`
                         );
@@ -452,7 +455,12 @@ const ProgramsModals = ({
                           Remove
                         </button>
                         <div className="truncate px-1.5 py-1 text-[10px] text-white/50">
-                          {file.name}
+                          {file.name}{" "}
+                          <span className="text-emerald-300/80">
+                            {file.size < 1024 * 1024
+                              ? `${Math.round(file.size / 1024)} KB`
+                              : `${(file.size / (1024 * 1024)).toFixed(1)} MB`}
+                          </span>
                         </div>
                       </li>
                     ))}
