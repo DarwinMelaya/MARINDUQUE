@@ -46,16 +46,23 @@ const Head = () => {
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
-              href="#programs"
-              className="inline-flex items-center justify-center rounded-xl bg-[#0054A6] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(0,84,166,.35)] transition hover:bg-[#0A5EC0] focus:outline-none focus:ring-2 focus:ring-cyan-300/60 focus:ring-offset-2 focus:ring-offset-[#07162C]"
+              href="/map-view"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0054A6] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(0,84,166,.35)] transition hover:bg-[#0A5EC0] focus:outline-none focus:ring-2 focus:ring-cyan-300/60 focus:ring-offset-2 focus:ring-offset-[#07162C]"
             >
-              Explore Programs
-            </a>
-            <a
-              href="#assistance"
-              className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white/90 backdrop-blur transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#FDB913]/70 focus:ring-offset-2 focus:ring-offset-[#07162C]"
-            >
-              Apply for Assistance
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-4 w-4"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.161 2.58a1.875 1.875 0 0 1 1.678 0l4.993 2.498c.106.052.23.052.336 0l3.869-1.935A1.875 1.875 0 0 1 21.75 4.82v12.485c0 .71-.401 1.36-1.037 1.677l-4.875 2.437a1.875 1.875 0 0 1-1.676 0l-4.994-2.497a.375.375 0 0 0-.336 0l-3.868 1.935A1.875 1.875 0 0 1 2.25 19.18V6.695c0-.710.401-1.360 1.037-1.677L7.162 2.58h1Zm-.161.92v13.5l.084-.042 4.994 2.498a.375.375 0 0 0 .336 0l4.875-2.437a.375.375 0 0 0 .211-.337V4.82a.375.375 0 0 0-.543-.334l-3.869 1.934a1.875 1.875 0 0 1-1.678 0L8.161 3.922A.375.375 0 0 0 8 3.5Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Map Projects
             </a>
           </div>
 

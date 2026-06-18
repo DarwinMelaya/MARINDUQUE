@@ -31,6 +31,7 @@ export function projectsToMapSites(list) {
       municipality: p.beneficiary,
       status: p.projectStatus,
       description: p.briefDescription,
+      images: Array.isArray(p.images) ? p.images.filter(Boolean) : [],
       coordinates: [Number(p.location.latitude), Number(p.location.longitude)],
     }));
 }
