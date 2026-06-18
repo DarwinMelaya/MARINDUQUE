@@ -283,6 +283,12 @@ const Programs = ({ onInitialLoadComplete }) => {
                       {proj.briefDescription}
                     </p>
                   ) : null}
+
+                  {proj.description ? (
+                    <p className="relative mt-2 line-clamp-4 text-[11px] leading-relaxed text-white/50">
+                      {proj.description}
+                    </p>
+                  ) : null}
                 </article>
               );
             })}

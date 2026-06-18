@@ -44,6 +44,7 @@ const ProgramsModals = ({
   const [beneficiary, setBeneficiary] = useState("");
   const [contactPerson, setContactPerson] = useState("");
   const [briefDescription, setBriefDescription] = useState("");
+  const [description, setDescription] = useState("");
   const [projectStatus, setProjectStatus] = useState("Ongoing");
   const [imageFiles, setImageFiles] = useState([]);
   /** Existing image URLs kept on update (edit mode). */
@@ -68,7 +69,7 @@ const ProgramsModals = ({
     setBeneficiary("");
     setContactPerson("");
     setBriefDescription("");
-    setProjectStatus("Ongoing");
+    setDescription("");
     setImageFiles([]);
     setKeptImageUrls([]);
     onLatitudeChange("");
@@ -86,6 +87,7 @@ const ProgramsModals = ({
     setBeneficiary(editingProject.beneficiary || "");
     setContactPerson(editingProject.contactPerson || "");
     setBriefDescription(editingProject.briefDescription || "");
+    setDescription(editingProject.description || "");
     setProjectStatus(editingProject.projectStatus || "Ongoing");
     const lat = editingProject.location?.latitude;
     const lng = editingProject.location?.longitude;
@@ -105,6 +107,7 @@ const ProgramsModals = ({
     setBeneficiary(editingProject.beneficiary || "");
     setContactPerson(editingProject.contactPerson || "");
     setBriefDescription(editingProject.briefDescription || "");
+    setDescription(editingProject.description || "");
     setProjectStatus(editingProject.projectStatus || "Ongoing");
     const lat = editingProject.location?.latitude;
     const lng = editingProject.location?.longitude;
@@ -161,6 +164,7 @@ const ProgramsModals = ({
         beneficiary,
         contactPerson,
         briefDescription,
+        description,
         projectStatus,
         location: {
           latitude: lat,
@@ -321,6 +325,22 @@ const ProgramsModals = ({
                   onChange={(e) => setBriefDescription(e.target.value)}
                   className={`${inputClass} resize-y min-h-[100px]`}
                   placeholder="Short summary of the project"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="modal-description" className={labelClass}>
+                  Description{" "}
+                  <span className="font-normal text-white/45">(detailed)</span>
+                </label>
+                <textarea
+                  id="modal-description"
+                  name="description"
+                  rows={6}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className={`${inputClass} resize-y min-h-[140px]`}
+                  placeholder="Full project description — shown on the public Programs page"
                 />
               </div>
 
