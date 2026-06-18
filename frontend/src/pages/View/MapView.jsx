@@ -274,6 +274,7 @@ const MapView = () => {
   const [status, setStatus]           = useState("ALL");
   const [pinnedOnly, setPinnedOnly]   = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [followLocation, setFollowLocation] = useState(false);
 
   // selected site for the detail panel
   const [activeSite, setActiveSite] = useState(null);
@@ -507,10 +508,14 @@ const MapView = () => {
         {/* map */}
         <div className="relative min-h-0 flex-1">
           <MapContainer center={CENTER} zoom={11} minZoom={9} maxZoom={18}
-            scrollWheelZoom attributionControl={false} className="h-full w-full" ref={mapRef}>
+            scrollWheelZoom attributionControl={false} className="h-full w-full" ref={mapRef}
+            whenReady={(e) => {
+              // Stop following when user manually drags the map
+              e.target.on("dragstart", () => setFollowLocation(false));
+            }}>
             <MapAutoResize />
             <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" subdomains="abcd" />
-            <MapUserLocation position={userLocation} bounds={BOUNDS} />
+            <MapUserLocation position={userLocation} bounds={BOUNDS} follow={followLocation} />
 
             {/* PSTO */}
             <Marker position={PSTO.coordinates} icon={createProgramDivIcon({ label: "PSTO", color: "#F59E0B" })}
@@ -538,6 +543,69 @@ const MapView = () => {
 
           {/* detail panel rendered outside Leaflet */}
           <DetailPanel site={activeSite} userLocation={userLocation} onClose={() => setActiveSite(null)} />
+
+          {/* ── Location button (bottom-right) ── */}
+          <div className="absolute bottom-10 right-3 z-[500] flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                if (!userLocation) return;
+                if (!followLocation) {
+                  // First press: fly to location and enable follow
+                  mapRef.current?.flyTo(
+                    [userLocation.lat, userLocation.lng],
+                    Math.max(mapRef.current.getZoom(), 15),
+                    { animate: true, duration: 0.7 }
+                  );
+                  setFollowLocation(true);
+                } else {
+                  // Second press: just pan once, keep follow on
+                  mapRef.current?.panTo(
+                    [userLocation.lat, userLocation.lng],
+                    { animate: true, duration: 0.4 }
+                  );
+                }
+              }}
+              disabled={!userLocation}
+              title={
+                geo.loading
+                  ? "Getting your location…"
+                  : geo.error
+                  ? geo.error
+                  : followLocation
+                  ? "Following your location — tap to re-centre"
+                  : "Centre on my location"
+              }
+              className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-lg transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60
+                ${followLocation
+                  ? "border-sky-400/60 bg-sky-500 text-white shadow-sky-500/40 hover:bg-sky-400"
+                  : "border-white/15 bg-slate-900/90 text-white/80 hover:bg-slate-800 hover:text-white"}
+                disabled:cursor-not-allowed disabled:opacity-40`}
+              aria-pressed={followLocation}
+              aria-label="Centre on my location"
+            >
+              {geo.loading ? (
+                /* spinner */
+                <svg className="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden>
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                </svg>
+              ) : (
+                /* location arrow icon */
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden>
+                  <path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clipRule="evenodd" />
+                </svg>
+              )}
+            </button>
+
+            {/* follow indicator pill */}
+            {followLocation && userLocation ? (
+              <div className="flex items-center gap-1.5 self-end rounded-full border border-sky-400/40 bg-sky-500/20 px-2.5 py-1 text-[10px] font-semibold text-sky-200 backdrop-blur">
+                <span className="h-1.5 w-1.5 rounded-full bg-sky-300 shadow-[0_0_8px_rgba(56,189,248,.8)] motion-safe:animate-pulse" />
+                Live
+              </div>
+            ) : null}
+          </div>
 
           {/* legend */}
           <div className="pointer-events-none absolute left-3 top-3 z-[500] hidden sm:block">

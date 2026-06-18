@@ -34,11 +34,28 @@ function FlyToFirstFix({ lat, lng, bounds }) {
   return null;
 }
 
+/** Continuously pan the map to the user's position when `follow` is true. */
+function FollowPosition({ lat, lng, follow }) {
+  const map = useMap();
+  const prevRef = useRef({ lat: null, lng: null });
+
+  useEffect(() => {
+    if (!follow || lat == null || lng == null) return;
+    // Only pan when the position actually changed to avoid jitter
+    if (prevRef.current.lat === lat && prevRef.current.lng === lng) return;
+    prevRef.current = { lat, lng };
+    map.panTo(L.latLng(lat, lng), { animate: true, duration: 0.4 });
+  }, [map, follow, lat, lng]);
+
+  return null;
+}
+
 /**
  * @param {{ lat: number, lng: number, accuracy?: number | null } | null} props.position
- * @param {import("leaflet").LatLngBounds | null} [props.bounds] — kapag nasa loob, isang beses na fly-to
+ * @param {import("leaflet").LatLngBounds | null} [props.bounds]
+ * @param {boolean} [props.follow] — when true, the map pans to keep the user centred
  */
-export default function MapUserLocation({ position, bounds = null }) {
+export default function MapUserLocation({ position, bounds = null, follow = false }) {
   const radiusM = useMemo(() => {
     if (!position?.accuracy || position.accuracy <= 0) return 45;
     return Math.min(Math.max(position.accuracy, 12), 400);
@@ -58,7 +75,10 @@ export default function MapUserLocation({ position, bounds = null }) {
 
   return (
     <>
-      {bounds ? <FlyToFirstFix lat={position.lat} lng={position.lng} bounds={bounds} /> : null}
+      {bounds && !follow ? (
+        <FlyToFirstFix lat={position.lat} lng={position.lng} bounds={bounds} />
+      ) : null}
+      <FollowPosition lat={position.lat} lng={position.lng} follow={follow} />
       <Circle
         center={ll}
         radius={radiusM}
